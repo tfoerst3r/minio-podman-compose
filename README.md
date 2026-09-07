@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-4.0
 -->
 
 <div align='center'>
-  <h1>Postgres And Compose</h1>
+  <h1>MinIO And Compose</h1>
   <p style='font-size:32pt;'>
   </p>
 </div>
