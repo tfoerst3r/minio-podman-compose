@@ -1,0 +1,5 @@
+Hello from MinIO!
+This is a test file for the podman-compose MinIO setup.
+
+Created: 20XX-XX-XX
+Purpose: verify mc cp / bucket upload pipeline
