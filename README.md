@@ -48,9 +48,9 @@ This project is about remembering how to deploy a postgreSQL container properly.
 
 <!-- ---- -->
 
-> ### Running minio CLI to Create a Bucket
-> 
-> `script.sh` content:
+> ### Create and Managinge a Bucket
+> The following script `script.sh` creates a bucket "my-bucket" and copies a file "somefile.txt" from `./staging/`
+> to the bucket.
 > 
 > ```bash
 > #!/usr/bin/env bash
