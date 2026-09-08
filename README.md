@@ -49,8 +49,9 @@ This project is about remembering how to deploy minIO as a Data Lake.
 <!-- ---- -->
 
 > ### Create and Managinge a Bucket
+
 > The following script `script.sh` creates a bucket "my-bucket" and copies a file "somefile.txt" from `./staging/`
-> to the bucket.
+> to the bucket. It utilizes the CLI `mc`, which stands for miniIO CLI.
 > 
 > ```bash
 > #!/usr/bin/env bash
