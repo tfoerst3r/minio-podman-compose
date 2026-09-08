@@ -12,7 +12,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 ## About the Project 
 
-This project is about remembering how to deploy a postgreSQL container properly.
+This project is about remembering how to deploy minIO as a Data Lake.
 
 ## Getting Started
 
