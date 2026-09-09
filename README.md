@@ -40,8 +40,7 @@ In the root folder, you can start up the containers via:
 podman compose up --detach
 ```
 
-In order to access environmental variables within the `compose.yml`, a `.env` file/link is needed to the required 
-variables.
+In order to access environmental variables within the `compose.yml`, a `.env` file/link is needed to the required variables.
 
 Alternatively, you can point directly to the file container the variables:
 
@@ -53,6 +52,18 @@ To access the container use `podman exec`:
 
 ```bash
 podman exec -it minio /bin/bash
+```
+
+To pull down the composed containers, use:
+
+```bash
+podman compose down
+```
+
+when you want to remove also the data and configurations, use:
+
+```bash
+podman compose down --volumes
 ```
 
 
