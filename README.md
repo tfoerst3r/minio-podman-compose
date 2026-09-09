@@ -28,7 +28,6 @@ This project is about remembering how to deploy minIO as a Data Lake.
 - podman
 - (docker -- may need modifications)
 
-
 <!--============-->
 
 ## Usage
@@ -108,6 +107,12 @@ mcli ls xyz/raw-data
 
 > [!TIP]
 > You can also utilize a shell script as given in `script.sh` to automate the process.
+
+### Working with the WebUI
+
+via the URL: `http://localhost:9001` you can access the MinIO via an UI and manage data there as well.
+
+<!--============-->
 
 ## License
 
