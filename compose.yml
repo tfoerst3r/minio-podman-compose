@@ -2,9 +2,6 @@
 #
 # SPDX-License-Identifier: MIT
 services:
-  # ============================================================================
-  # STORAGE LAYER: MinIO (Data Lake Raw/Curated Buckets & Model Artifacts)
-  # ============================================================================
   minio:
     image: quay.io/minio/minio
     container_name: minio
@@ -13,18 +10,32 @@ services:
     env_file:
       - ./secrets/minio.env
     ports:
-      - "${API_PORT}:9000"
-      - "${WEBUI_PORT}:9001"
+      - "${API_PORT:-9000}:9000"
+      - "${WEBUI_PORT:-9001}:9001"
     volumes:
       - minio_data:/data
       - minio_mc_config:/root/.mc
       - ./staging:/staging
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "mc", "ready", "local"]
       interval: 10s
       timeout: 5s
       retries: 5
-      
+      start_period: 10s
+  
+  # MinIO Bucket Initialisations
+  minio-create-buckets:
+    image: quay.io/minio/minio
+    container_name: minio_init
+    depends_on:
+      minio:
+        condition: service_healthy
+    env_file:
+      - ./secrets/minio.env
+    entrypoint: ["/bin/bash", "/scripts/init-buckets.sh"]
+    volumes:
+      - ./scripts/init-buckets.sh:/scripts/init-buckets.sh:ro
+
 volumes:
   minio_data:
   minio_mc_config:

@@ -10,6 +10,8 @@ SPDX-License-Identifier: CC-BY-4.0
   </p>
 </div>
 
+<!--============-->
+
 ## About the Project 
 
 This project is about remembering how to deploy minIO as a Data Lake.
@@ -24,63 +26,88 @@ This project is about remembering how to deploy minIO as a Data Lake.
 ### Prerequisites
 
 - podman
-- docker (may need modifications)
+- (docker -- may need modifications)
+
+
+<!--============-->
 
 ## Usage
 
-> ### Starting and access the container infrastructure
-> 
-> Inside that directory, start the container in the background. 
-> Unfortunately `system.env` need to be added to make sure the global variables are read beforehand:
-> 
-> ```bash
-> podman compose --env-file ./secrets/system.env up --detach
-> ```
-> 
-> Alternatively, you can make a soft-link to `ln -s ./secrets/system.env .env`. 
-> The root file `.env` will be read.
-> 
-> To access the container use `podman exec`:
-> 
-> ```bash
-> podman exec -it $(podman ps -q -f name=minio) /bin/bash
-> ```
+### Starting and access the container infrastructure
 
-<!-- ---- -->
+In the root folder, you can start up the containers via:
 
-> ### Create and Managinge a Bucket
+```
+podman compose up --detach
+```
 
-> The following script `script.sh` creates a bucket "my-bucket" and copies a file "somefile.txt" from `./staging/`
-> to the bucket. It utilizes the CLI `mc`, which stands for miniIO CLI.
-> 
-> ```bash
-> #!/usr/bin/env bash
-> #set -euo pipefail
-> 
-> # Secrets
-> source secrets/system.env
-> source secrets/minio.env
-> 
-> ACCESS_KEY="${MINIO_ROOT_USER}"
-> SECRET_KEY="${MINIO_ROOT_PASSWORD}"
-> 
-> # Input
-> CONTAINER=minio
-> ENDPOINT="http://localhost:${API_PORT}"
-> BUCKET="my-bucket"
-> FILE="/staging/somefile.txt"
-> 
-> # Script
-> podman exec "$CONTAINER" mc alias set local "$ENDPOINT" "$ACCESS_KEY" "$SECRET_KEY"
-> podman exec "$CONTAINER" mc mb --ignore-existing "local/$BUCKET"
-> podman exec "$CONTAINER" mc cp "$FILE" "local/$BUCKET/"
-> podman exec "$CONTAINER" mc ls "local/$BUCKET"
-> ```
-> 
-> - `mc alias` .. manage server credentials in configuration file
-> - `mc mb` .. make a bucket
-> - `mc cp` .. copy object
-> - `mc ls` .. list buckets and objects
+In order to access environmental variables within the `compose.yml`, a `.env` file/link is needed to the required 
+variables.
+
+Alternatively, you can point directly to the file container the variables:
+
+```bash
+podman compose --env-file ./secrets/system.env up --detach
+```
+
+To access the container use `podman exec`:
+
+```bash
+podman exec -it minio /bin/bash
+```
+
+
+### Working with MinIO via CLI
+
+`mc` (Minio CLI) is the tool which manages the interaction with MinIO.
+
+**Syntax**
+
+```
+mc ARGUMENT [OPTIONS]
+```
+
+**Most important ARGUMENTs:**
+
+- `alias` .. manage server credentials in configuration file
+- `ls ALIAS[/BUCKET]` .. list buckets or objects
+- `mb` .. make a bucket
+- `cp` .. copy an object
+
+You can use the `mc` of the container instead of installing your local version. Via `alias` you can set a alias command for `mc` in your current shell session.
+
+```bash
+CONTAINER=minio
+alias mcli="podman exec $CONTAINER mc"
+```
+
+First, you can create an alias for MinIO connection.
+
+```
+MYALIAS=xyz
+source ./secrets/minio.env && mcli alias set $MYALIAS "http://localhost:9000" $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+```
+
+Now you can simply use `xyz` to manage the buckets of `xyz`, like listing the content of the connection:
+
+```
+mcli ls xyz
+```
+
+Or coping a file to the bucket `raw-data`:
+
+```
+mcli cp /staging/somefile.txt xyz/raw-data
+```
+
+and checking the contents of `raw-data`:
+
+```
+mcli ls xyz/raw-data
+```
+
+> [!TIP]
+> You can also utilize a shell script as given in `script.sh` to automate the process.
 
 ## License
 
